@@ -1,0 +1,56 @@
+# Hammer library tester
+
+## Build
+
+build { core init drivers/timer test/hammer }
+
+create_boot_directory
+
+## Config
+
+install_config {
+<config >
+        <parent-provides>
+                <service name="ROM"/>
+                <service name="PD"/>
+                <service name="RM"/>
+                <service name="CPU"/>
+                <service name="LOG"/>
+                <service name="IO_PORT"/>
+                <service name="IRQ"/>
+	</parent-provides>
+
+        <default-route>
+                <any-service> <parent/> <any-child/> </any-service>
+        </default-route>
+
+	<start name="timer" caps="100">
+		<resource name="RAM" quantum="1M"/>
+		<provides> <service name="Timer"/> </provides>
+	</start>
+
+	<start name="test-hammer" caps="100">
+	       <resource name="RAM" quantum="4M" />
+	       <config>
+			<vfs>
+				<dir name="dev"> <log/> </dir>
+			</vfs>
+	          <libc stdout="/dev/log" />
+	       </config>
+	</start>
+</config>
+}
+
+
+## Boot image
+
+build_boot_image {
+       core init timer
+       ld.lib.so libc.lib.so vfs.lib.so vfs.lib.so vfs.lib.so posix.lib.so libm.lib.so
+        test-hammer hammer.lib.so
+}
+
+append qemu_args " -nographic "
+
+run_genode_until {test-hammer] yay!} 5
+

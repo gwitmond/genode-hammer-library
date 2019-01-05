@@ -1,0 +1,12 @@
+LICENSE := GPLv2
+VERSION := git
+DOWNLOADS := hammer.git
+
+URL(hammer) := https://github.com/UpstandingHackers/hammer.git
+REV(hammer) := 55280a73eee46fe359911fa8a7f0f447c452242b
+DIR(hammer) := src/lib/hammer
+
+# PATCHES := 
+
+DIRS := include/hammer
+DIR_CONTENT(include/hammer) := src/lib/hammer/src/{hammer,glue,compiler_specifics,allocator}.h
